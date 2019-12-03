@@ -251,7 +251,6 @@ Polynomial SumPolynomials(Polynomial P1, Polynomial P2) {
     }
     return Result;
 }
-
 /*清除多项式
  【规则】
  1、释放多项式内存，包括前导头结点
@@ -273,6 +272,44 @@ void ClearPolynomial(Polynomial P) {
     free(Cur);
     P = NULL;
 }
+
+/*多项式乘法
+ 【规则】
+ 两个多项式需要已经存在
+ 【参数】
+ P1，P2：待运算的两个多项式
+ 【返回值】
+ 结果多项式
+ */
+Polynomial MultiPolynomials(Polynomial P1, Polynomial P2) {
+    Polynomial Temp1 = P1->Next, Temp2 = P2->Next;
+    Polynomial Result = CreateEmptyPolyNode();
+    Polynomial TempResult = CreateEmptyPolyNode();
+    Polynomial Cur = TempResult;
+    Polynomial TempR = TempResult->Next;
+    while (Temp1) {
+        while (Temp2) {
+            TempR = CreateEmptyPolyNode();
+            TempR->Base = Temp1->Base * Temp2->Base;
+            TempR->Exponent = Temp2->Exponent + Temp1->Exponent;
+            Cur->Next = TempR;
+            Cur = Cur->Next;
+            TempR = TempR->Next;
+            Temp2 = Temp2->Next;
+        }
+        Result = SumPolynomials(Result, TempResult);
+        ClearPolynomial(TempResult);
+        /*重置TempResult*/
+        TempResult = CreateEmptyPolyNode();
+        TempR = TempResult->Next;
+        Cur = TempResult;
+        Temp1 = Temp1->Next;
+        Temp2 = P2->Next;
+    }
+    return Result;
+}
+
+
 
 /*输出多项式
  【规则】
